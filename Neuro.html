@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroTouch: Virtual Simulator for Cranial Microneurosurgery Training</title>
+    <style>
+        :root {
+            --primary-color: #1d3557;
+            --secondary-color: #0FBCCC;
+            --accent-color: #F05766;
+            --light-color: #f1faee;
+            --dark-color: #1d3557;
+            --gradient-start: #0FBCCC;
+            --gradient-end: #F05766;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .logo img {
+            margin-right: 10px;
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--dark-color);
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/800');
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 2rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .hero-subtitle {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .hero-description {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0ca8b8;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e04555;
+            color: white;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-divider {
+            width: 150px;
+            height: 5px;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            margin: 0 auto 4rem;
+            border-radius: 3px;
+        }
+        
+        /* Features Section */
+        .features-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            flex: 1 1 300px;
+            max-width: 350px;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem auto 1rem;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--dark-color);
+        }
+        
+        .feature-description {
+            padding: 0 1.5rem 2rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        .learn-more {
+            display: block;
+            text-align: center;
+            margin: 1rem 0 2rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .learn-more:hover {
+            color: var(--accent-color);
+        }
+        
+        .learn-more i {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+        
+        .learn-more:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Benefits Section */
+        .benefits-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .benefit-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .benefit-icon {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .benefit-description {
+            color: #666;
+        }
+        
+        /* Modules Section */
+        .modules-section {
+            padding: 4rem 0;
+        }
+        
+        .module-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .module-content {
+            padding: 2rem;
+        }
+        
+        .module-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .module-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .module-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Testimonials Section */
+        .testimonials-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+        
+        .testimonial-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            flex: 1 1 300px;
+            max-width: 350px;
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .testimonial-position {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn-cta {
+            background-color: white;
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-cta:hover {
+            background-color: var(--dark-color);
+            color: white;
+            transform: translateY(-5px);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column a {
+            color: #ccc;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        /* Feedback Styles */
+        .feedback-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .feedback-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            flex: 1 1 300px;
+            max-width: 350px;
+            transition: transform 0.3s ease;
+        }
+        
+        .feedback-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .rating {
+            color: #FFD700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feedback-content {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .feedback-author {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .feedback-institution {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: white;
+                flex-direction: column;
+                padding: 1rem 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem 2rem;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .hero-subtitle {
+                font-size: 3rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .feature-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../Downloads/neuro touch logo.jpg" alt="NeuroTouch Logo"> NeuroTouch
+            </div>
+            <nav>
+               <!-- In the navigation section of index.html, update these links: -->
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#modules">Training Modules</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="feedback.html">Feedback</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <button class="menu-toggle">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 class="hero-title">NEUROSURGICAL TRAINING</h1>
+        <h2 class="hero-subtitle">NEUROTOUCH</h2>
+        <p class="hero-description">Pioneering neurosurgical education with physics-based virtual simulation for cranial microneurosurgery training</p>
+        <div class="hero-buttons">
+            <a href="#features" class="btn btn-primary">🔍 EXPLORE TECHNOLOGIES</a>
+            <a href="contact.html" class="btn btn-secondary">✉️ CONTACT US</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">🧠 Key Features</h2>
+            <p class="section-subtitle">Discover the cutting-edge technologies that make NeuroTouch the leading neurosurgical training platform</p>
+            <div class="section-divider"></div>
+            
+            <div class="features-container">
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3 class="feature-title">Haptic Feedback</h3>
+                    <p class="feature-description">Realistic tactile sensations that accurately mimic tissue textures, resistance, and surgical tool interactions.</p>
+                    <a href="#" class="learn-more">Learn More →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Anatomical Precision</h3>
+                    <p class="feature-description">Features anatomically accurate brain models derived from MRI and CT scans of actual patients.</p>
+                    <a href="#" class="learn-more">Learn More →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Performance Metrics</h3>
+                    <p class="feature-description">Comprehensive assessment tools that measure surgical efficiency, precision, and safety parameters.</p>
+                    <a href="#" class="learn-more">Learn More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">Educational Impact</h2>
+            <p class="section-subtitle">Research has demonstrated that NeuroTouch training significantly improves surgical performance</p>
+            <div class="section-divider"></div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <h3 class="benefit-title">Skill Acquisition</h3>
+                    <p class="benefit-description">Residents demonstrate faster acquisition of technical skills compared to traditional training methods alone.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚠️</div>
+                    <h3 class="benefit-title">Error Reduction</h3>
+                    <p class="benefit-description">Regular simulator use correlates with reduced error rates in subsequent real surgical procedures.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔄</div>
+                    <h3 class="benefit-title">Standardized Assessment</h3>
+                    <p class="benefit-description">Provides objective measures of surgical competency that can be used to track resident progress.</p>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🧪</div>
+                    <h3 class="benefit-title">Risk-Free Environment</h3>
+                    <p class="benefit-description">Practice complex procedures in a zero-risk setting without patient safety concerns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Modules Section -->
+    <section id="modules" class="modules-section">
+        <div class="container">
+            <h2 class="section-title">Training Modules</h2>
+            <p class="section-subtitle">NeuroTouch offers a comprehensive suite of training scenarios covering essential neurosurgical procedures</p>
+            <div class="section-divider"></div>
+            
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-image" style="background-image: url('../Downloads/tumor\ resection.jpg')"></div>
+                    <div class="module-content">
+                        <h3 class="module-title">Tumor Resection</h3>
+                        <p class="module-description">Practice removing brain tumors with varying properties (consistency, vascularity, location) while preserving surrounding healthy tissue. The system provides real-time feedback on resection percentage, damage to critical structures, and blood loss.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-image" style="background-image: url('/api/placeholder/600/400')"></div>
+                    <div class="module-content">
+                        <h3 class="module-title">Hemostasis Training</h3>
+                        <p class="module-description">Learn to manage intraoperative bleeding through various techniques such as bipolar coagulation, application of hemostatic agents, and suction usage.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+                
+                <div class="module-card">
+                    <div class="module-image" style="background-image: url('/api/placeholder/600/400')"></div>
+                    <div class="module-content">
+                        <h3 class="module-title">Endoscopic Ventricular Procedures</h3>
+                        <p class="module-description">Develop skills in navigating ventricular spaces using endoscopic tools for procedures such as third ventriculostomy and colloid cyst removal.</p>
+                        <a href="#" class="learn-more">Learn More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">Testimonials</h2>
+            <p class="section-subtitle">What neurosurgeons and residents are saying about NeuroTouch</p>
+            <div class="section-divider"></div>
+            
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"NeuroTouch has revolutionized how we train our residents. The ability to practice complex procedures in a risk-free environment has accelerated their learning curve dramatically."</p>
+                    <p class="testimonial-author">Dr. Sarah Johnson</p>
+                    <p class="testimonial-position">Program Director, Neurosurgery Residency</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"As a resident, having access to NeuroTouch has been invaluable. I can practice challenging cases repeatedly until I feel confident in my approach and technique."</p>
+                    <p class="testimonial-author">Dr. Michael Chen</p>
+                    <p class="testimonial-position">Neurosurgery Resident, PGY-4</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The metrics provided by NeuroTouch offer objective assessment of surgical skills that was previously impossible to quantify. This has transformed how we evaluate resident progress."</p>
+                    <p class="testimonial-author">Dr. Robert Williams</p>
+                    <p class="testimonial-position">Chief of Neurosurgery</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Experience the Future of Neurosurgical Training</h2>
+            <p class="cta-description">Join leading institutions worldwide that are incorporating NeuroTouch into their training programs</p>
+            <a href="contact.html" class="btn-cta">Request a Demonstration</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>NeuroTouch</h3>
+                <p>A product of the National Research Council of Canada in collaboration with leading neurosurgical centers worldwide.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#benefits">Benefits</a></li>
+                    <li><a href="#modules">Training Modules</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Research Papers</a></li>
+                    <li><a href="#">Case Studies</a></li>
+                    <li><a href="#">User Manual</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <ul>
+                    <li>Email: info@neurotouch.com</li>
+                    <li>Phone: +1 (800) 555-1234</li>
+                    <li>Address: 1200 Montreal Road, Ottawa, ON, Canada</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 NeuroTouch. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple JavaScript for mobile menu toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
