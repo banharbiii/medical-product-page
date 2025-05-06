@@ -6,13 +6,24 @@
     <title>NeuroTouch: Virtual Simulator for Cranial Microneurosurgery Training</title>
     <style>
         :root {
-            --primary-color: #1d3557;
-            --secondary-color: #0FBCCC;
-            --accent-color: #F05766;
-            --light-color: #f1faee;
-            --dark-color: #1d3557;
+            --primary-color: #1a2a44;
+            --secondary-color: #00a8cc;
+            --accent-color: #ff4b5c;
+            --light-color: #f5f7fa;
+            --dark-color: #1a2a44;
             --gradient-start: #0FBCCC;
             --gradient-end: #F05766;
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --dark: #1e293b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+            --gray: #94a3b8;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 8px;
+            --transition: all 0.3s ease;
+            --heading-font: 'Montserrat', sans-serif;
         }
         
         * {
@@ -22,12 +33,13 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: roboto system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             line-height: 1.6;
             color: #333;
             margin: 0;
             padding: 0;
             background-color: #fff;
+            padding-top: 80px; /* To account for fixed nav */
         }
         
         a {
@@ -39,65 +51,164 @@
         a:hover {
             color: var(--accent-color);
         }
-        
-        /* Header & Navigation */
-        header {
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+
+        /* Navigation */
+        .top-nav {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            position: fixed;
             width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+            top: 0;
         }
-        
-        .nav-container {
+
+        .top-nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 0 2rem;
         }
-        
-        .logo {
+
+        .nav-brand {
             display: flex;
             align-items: center;
-            font-size: 1.5rem;
+            gap: 12px;
+            font-family: var(--heading-font);
             font-weight: 700;
-            color: var(--dark-color);
+            font-size: 1.5rem;
+            color: var(--primary);
         }
-        
-        .logo img {
-            margin-right: 10px;
+
+        .nav-brand .logo {
             height: 40px;
+            width: auto;
         }
-        
+
+        .nav-brand:hover .logo {
+            transform: none;
+        }
+
         .nav-links {
             display: flex;
-            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
         }
-        
-        .nav-links li {
-            margin-left: 1.5rem;
+
+        .nav-link {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            padding: 0.75rem 0;
+            transition: var(--transition);
         }
-        
-        .nav-links a {
-            color: var(--dark-color);
-            font-weight: 500;
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover:after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu > a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark);
+            font-weight: 600;
+            padding: 0.75rem 0;
             position: relative;
         }
-        
-        .nav-links a:hover {
-            color: var(--secondary-color);
+
+        .dropdown-menu > a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+            transition: var(--transition);
         }
-        
-        .menu-toggle {
+
+        .dropdown-menu:hover > a:after {
+            width: 100%;
+        }
+
+        .dropdown-content {
             display: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--dark-color);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            min-width: 240px;
+            border-radius: var(--radius);
+            padding: 1rem 0;
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .dropdown-menu:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 500;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--light);
+            color: var(--primary);
+            padding-left: 1.8rem;
+        }
+
+        .dropdown-content a i {
+            font-size: 1rem;
+            color: var(--secondary);
+            width: 20px;
+            text-align: center;
         }
         
         /* Hero Section */
@@ -419,143 +530,149 @@
             color: white;
             transform: translateY(-5px);
         }
-        
-        /* Footer */
+
+        /* New Footer */
         footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 4rem 0 2rem;
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 80px 0 0;
         }
-        
-        .footer-container {
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 50px;
             max-width: 1200px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
             padding: 0 2rem;
         }
-        
-        .footer-column h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -10px;
-            width: 50px;
-            height: 2px;
-            background-color: var(--secondary-color);
-        }
-        
-        .footer-column ul {
-            list-style: none;
-        }
-        
-        .footer-column ul li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-column a {
-            color: #ccc;
-            transition: color 0.3s;
-        }
-        
-        .footer-column a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Contact Form */
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-control:focus {
-            border-color: var(--secondary-color);
-            outline: none;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .btn-block {
-            width: 100%;
-        }
-        
-        /* Feedback Styles */
-        .feedback-cards {
+
+        .footer-brand {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-brand .footer-logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .footer-brand span {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+
+        .footer-description {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 2rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 50%;
+            transition: var(--transition);
         }
-        
-        .feedback-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            flex: 1 1 300px;
-            max-width: 350px;
-            transition: transform 0.3s ease;
+
+        .footer-social a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
         }
-        
-        .feedback-card:hover {
-            transform: translateY(-5px);
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
-        
-        .rating {
-            color: #FFD700;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+
+        .link-group h4 {
+            color: var(--white);
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
-        .feedback-content {
-            margin-bottom: 1.5rem;
-            color: #666;
+
+        .link-group h4 i {
+            color: var(--secondary);
         }
-        
-        .feedback-author {
-            font-weight: 600;
-            color: var(--dark-color);
+
+        .link-group ul li {
+            margin-bottom: 15px;
+            transition: var(--transition);
         }
-        
-        .feedback-institution {
-            color: #666;
+
+        .link-group ul li:hover {
+            transform: translateX(5px);
+        }
+
+        .link-group a {
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .link-group a:hover {
+            color: var(--secondary);
+        }
+
+        .link-group a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px 2rem;
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .legal-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legal-links a {
+            color: var(--gray);
             font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .legal-links a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
         }
         
         /* Responsive Styling */
@@ -595,30 +712,56 @@
             .feature-card {
                 max-width: 100%;
             }
+
+            /* Footer responsive */
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-brand {
+                text-align: center;
+                align-items: center;
+            }
+
+            .footer-social {
+                justify-content: center;
+            }
         }
     </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- Header & Navigation -->
-    <header>
-        <div class="nav-container">
-            <div class="logo">
-                <img src="../Downloads/neuro touch logo.jpg" alt="NeuroTouch Logo"> NeuroTouch
+    <!-- New Navigation -->
+    <nav class="top-nav">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="home.html"><img src="../Downloads/t world.png" alt="Trendy Logo" class="logo"></a>
+                <span>TRENDY INFO</span>
             </div>
-            <nav>
-               <!-- In the navigation section of index.html, update these links: -->
-                <ul class="nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#benefits">Benefits</a></li>
-                    <li><a href="#modules">Training Modules</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="feedback.html">Feedback</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-                <button class="menu-toggle">☰</button>
-            </nav>
+            <div class="nav-links">
+                <div class="dropdown-menu">
+                    <a href="#categories"><i class="fas fa-th-large"></i> Categories <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="communication.html"><i class="fas fa-comments"></i> Communication</a>
+                        <a href="security.html"><i class="fas fa-shield-alt"></i> Security</a>
+                        <a href="health.html"><i class="fas fa-heartbeat"></i> Health</a>
+                        <a href="entertainment.html"><i class="fas fa-film"></i> Entertainment</a>
+                        <a href="transportation.html"><i class="fas fa-car"></i> Transportation</a>
+                        <a href="education.html"><i class="fas fa-graduation-cap"></i> Education</a>
+                    </div>
+                </div>
+                <a href="aboutus.html" class="nav-link"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="#feedback" class="nav-link"><i class="fas fa-envelope"></i> Contact</a>
+            </div>
         </div>
-    </header>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -698,44 +841,6 @@
         </div>
     </section>
 
-    <!-- Training Modules Section -->
-    <section id="modules" class="modules-section">
-        <div class="container">
-            <h2 class="section-title">Training Modules</h2>
-            <p class="section-subtitle">NeuroTouch offers a comprehensive suite of training scenarios covering essential neurosurgical procedures</p>
-            <div class="section-divider"></div>
-            
-            <div class="modules-grid">
-                <div class="module-card">
-                    <div class="module-image" style="background-image: url('../Downloads/tumor\ resection.jpg')"></div>
-                    <div class="module-content">
-                        <h3 class="module-title">Tumor Resection</h3>
-                        <p class="module-description">Practice removing brain tumors with varying properties (consistency, vascularity, location) while preserving surrounding healthy tissue. The system provides real-time feedback on resection percentage, damage to critical structures, and blood loss.</p>
-                        <a href="#" class="learn-more">Learn More →</a>
-                    </div>
-                </div>
-                
-                <div class="module-card">
-                    <div class="module-image" style="background-image: url('/api/placeholder/600/400')"></div>
-                    <div class="module-content">
-                        <h3 class="module-title">Hemostasis Training</h3>
-                        <p class="module-description">Learn to manage intraoperative bleeding through various techniques such as bipolar coagulation, application of hemostatic agents, and suction usage.</p>
-                        <a href="#" class="learn-more">Learn More →</a>
-                    </div>
-                </div>
-                
-                <div class="module-card">
-                    <div class="module-image" style="background-image: url('/api/placeholder/600/400')"></div>
-                    <div class="module-content">
-                        <h3 class="module-title">Endoscopic Ventricular Procedures</h3>
-                        <p class="module-description">Develop skills in navigating ventricular spaces using endoscopic tools for procedures such as third ventriculostomy and colloid cyst removal.</p>
-                        <a href="#" class="learn-more">Learn More →</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Testimonials Section -->
     <section id="testimonials" class="testimonials-section">
         <div class="container">
@@ -774,52 +879,75 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- New Footer -->
     <footer>
-        <div class="footer-container">
-            <div class="footer-column">
-                <h3>NeuroTouch</h3>
-                <p>A product of the National Research Council of Canada in collaboration with leading neurosurgical centers worldwide.</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="../Downloads/trendy.png" alt="Trendy Logo" class="footer-logo">
+                    <span>TRENDY INFO</span>
+                    <p class="footer-description">Exploring the future through industry innovation.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4><i class="fas fa-industry"></i> Industries</h4>
+                        <ul>
+                            <li><a href="health.html"><i class="fas fa-heartbeat"></i> Health Tech</a></li>
+                            <li><a href="security.html"><i class="fas fa-shield-alt"></i> Cybersecurity</a></li>
+                            <li><a href="transportation.html"><i class="fas fa-car"></i> Transportation</a></li>
+                            <li><a href="communication.html"><i class="fas fa-comments"></i> Communication</a></li>
+                            <li><a href="education.html"><i class="fas fa-graduation-cap"></i> Education</a></li>
+                            <li><a href="entertainment.html"><i class="fas fa-film"></i> Entertainment</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4><i class="fas fa-book"></i> Resources</h4>
+                        <ul>
+                            <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
+                            <li><a href="#"><i class="fas fa-chart-line"></i> Market Data</a></li>
+                            <li><a href="#"><i class="fas fa-blog"></i> Blog</a></li>
+                            <li><a href="#"><i class="fas fa-newspaper"></i> News</a></li>
+                            <li><a href="#"><i class="fas fa-book-open"></i> Guides</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4><i class="fas fa-building"></i> Company</h4>
+                        <ul>
+                            <li><a href="about.html"><i class="fas fa-users"></i> About</a></li>
+                            <li><a href="#"><i class="fas fa-briefcase"></i> Careers</a></li>
+                            <li><a href="#"><i class="fas fa-handshake"></i> Partners</a></li>
+                            <li><a href="#feedback"><i class="fas fa-envelope"></i> Contact</a></li>
+                            <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#benefits">Benefits</a></li>
-                    <li><a href="#modules">Training Modules</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    © 2025 Trendy Info. All rights reserved.
+                </div>
+                <div class="legal-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
             </div>
-            
-            <div class="footer-column">
-                <h3>Resources</h3>
-                <ul>
-                    <li><a href="#">Research Papers</a></li>
-                    <li><a href="#">Case Studies</a></li>
-                    <li><a href="#">User Manual</a></li>
-                    <li><a href="#">FAQs</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h3>Contact</h3>
-                <ul>
-                    <li>Email: info@neurotouch.com</li>
-                    <li>Phone: +1 (800) 555-1234</li>
-                    <li>Address: 1200 Montreal Road, Ottawa, ON, Canada</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 NeuroTouch. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
         // Simple JavaScript for mobile menu toggle
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.querySelector('.menu-toggle')?.addEventListener('click', function() {
             document.querySelector('.nav-links').classList.toggle('active');
         });
         
